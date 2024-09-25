@@ -1,16 +1,28 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 
-import App from './Pages/App';
 import reportWebVitals from './reportWebVitals';
 
 import './assets/index.css';
+import { AuthProvider } from './lib/context/AuthContext';
+import { BrowserRouter } from 'react-router-dom';
+import { AppRoutes } from './Pages/Routes';
+import { RouteProvider } from './lib/context/RouteContext';
+import { DispatchProvider } from './lib/context/DispatchContext';
 
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
   .render(
     <React.StrictMode>
-      <App />
+      <BrowserRouter>
+        <RouteProvider>
+          <AuthProvider>
+            <DispatchProvider>
+              <AppRoutes />
+            </DispatchProvider>
+          </AuthProvider>
+        </RouteProvider>
+      </BrowserRouter>
     </React.StrictMode>
   );
 

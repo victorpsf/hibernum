@@ -1,0 +1,36 @@
+FROM node:20-alpine
+
+RUN mkdir -p /deployment
+
+WORKDIR /deployment
+
+COPY Client/lib            lib/
+COPY Client/middleware     middleware/
+COPY Client/proxy          proxy/
+
+COPY Client/package.json   package.json
+COPY Client/index.js       index.js
+
+RUN mkdir -p /deployment/client
+
+WORKDIR /deployment/client
+
+COPY Client/react                   .
+RUN npm install
+RUN npm run build
+
+WORKDIR /deployment
+
+RUN rm -rf ./public
+RUN mkdir -p ./public
+
+RUN echo "COPY FOLDERS AND FILES"
+
+RUN mv ./client/build/* ./public
+RUN rm -rf /deployment/client/
+
+RUN npm install
+
+EXPOSE 8080
+
+CMD [ "node", "index.js" ]

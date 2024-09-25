@@ -1,3 +1,6 @@
 *[oO][bB][jJ]
 *[bB][iI][nN]
 *[\.][iI][dD][eE][aA]
+
+node_modules
+package-lock.json

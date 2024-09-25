@@ -43,6 +43,21 @@ services:
     networks:
       - app-network
 
+  client:
+    container_name: "client-container"
+    build:
+      context: ./
+      dockerfile: Dockerfile.Client
+    env_file:
+      - ./reference/secrets/Client.env
+    depends_on:
+      - auth
+      - hibernum
+    ports:
+      - 80:8080
+    networks:
+      - app-network
+
 networks:
   app-network:
     external: true
