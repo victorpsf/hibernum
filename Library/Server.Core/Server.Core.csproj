@@ -1,0 +1,39 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.8" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.7" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions" Version="8.0.7" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Analyzers" Version="8.0.7" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.7">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="8.0.7" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.7">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.4" />
+    <PackageReference Include="Serilog.AspNetCore" Version="8.0.2-dev-00341" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Server.Database\Server.Database.csproj" />
+    <ProjectReference Include="..\Server.Exceptions\Server.Exceptions.csproj" />
+    <ProjectReference Include="..\Server.Extensions\Server.Extensions.csproj" />
+    <ProjectReference Include="..\Server.Interfaces\Server.Interfaces.csproj" />
+    <ProjectReference Include="..\Server.Library\Server.Library.csproj" />
+    <ProjectReference Include="..\Server.Middleware\Server.Middleware.csproj" />
+    <ProjectReference Include="..\Server.Models\Server.Models.csproj" />
+    <ProjectReference Include="..\Server.Properties\Server.Properties.csproj" />
+    <ProjectReference Include="..\Server.Security\Server.Security.csproj" />
+    <ProjectReference Include="..\Server.Services\Server.Services.csproj" />
+  </ItemGroup>
+</Project>

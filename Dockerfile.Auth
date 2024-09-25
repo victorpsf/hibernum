@@ -1,0 +1,35 @@
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
+WORKDIR /app
+
+EXPOSE 8080
+
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+
+WORKDIR /src
+
+COPY Library/Server.Core/           Library/Server.Core
+COPY Library/Server.Database/       Library/Server.Database
+COPY Library/Server.Exceptions/     Library/Server.Exceptions
+COPY Library/Server.Extensions/     Library/Server.Extensions
+COPY Library/Server.Interfaces/     Library/Server.Interfaces
+COPY Library/Server.Library/        Library/Server.Library
+COPY Library/Server.Middleware/     Library/Server.Middleware
+COPY Library/Server.Models/         Library/Server.Models
+COPY Library/Server.Properties/     Library/Server.Properties
+COPY Library/Server.Security/       Library/Server.Security
+COPY Library/Server.Services/       Library/Server.Services
+COPY Library/Server.Validation/     Library/Server.Validation
+COPY Authentication.Server/         Authentication.Server
+
+RUN dotnet restore "./Authentication.Server/Authentication.Server.csproj"
+
+RUN dotnet build "./Authentication.Server/Authentication.Server.csproj" -c Release -o /app/build
+FROM build AS publish
+RUN dotnet publish "./Authentication.Server/Authentication.Server.csproj" -c Release -o /app/publish /p:UseAppHost=false
+
+WORKDIR /app
+RUN rm -rf /src
+
+FROM base AS final
+COPY --from=publish /app/publish .
+ENTRYPOINT ["dotnet", "Authentication.Server.dll"]

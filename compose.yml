@@ -1,0 +1,48 @@
+services:
+  db:
+    image: postgres
+    container_name: "db-container"
+    # build:
+    #   context: ./
+    #   dockerfile: Dockerfile.Database
+    volumes:
+      - ./reference/scripts/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./postgres-data:/var/lib/postgresql
+    env_file:
+      - ./reference/secrets/Database.env
+    ports:
+      - 5432:5432
+    networks:
+      - app-network
+
+  auth:
+    container_name: "auth-container"
+    build:
+      context: ./
+      dockerfile: Dockerfile.Auth
+    env_file:
+      - ./reference/secrets/Auth.env
+    depends_on:
+      - db
+    ports:
+      - 3001:8080
+    networks:
+      - app-network
+
+  hibernum:
+    container_name: "hibernum-container"
+    build:
+      context: ./
+      dockerfile: Dockerfile.Hibernum
+    env_file:
+      - ./reference/secrets/Hibernum.env
+    depends_on:
+      - db
+    ports:
+      - 3002:8080
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    external: true

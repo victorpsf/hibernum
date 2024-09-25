@@ -1,0 +1,25 @@
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using Server.Database.Entity.Enumerables;
+
+namespace Server.Database.Entity;
+
+[Table(name: "personcontact", Schema = "public")]
+public class PersonContactEntity
+{
+    [Column(name: "id")]
+    public long Id { get; set; }
+    
+    [Column(name: "type")]
+    public PersonContactType Type { get; set; }
+
+    [Column(name: "value")] 
+    public string Value { get; set; } = string.Empty;
+
+    [Column(name: "created_at")]
+    public DateTime CreatedAt { get; set; }
+    
+    [Column(name: "deleted_at")]
+    public DateTime? DeletedAt { get; set; }
+
+    public PersonEntity Person { get; set; } = new();
+}

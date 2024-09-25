@@ -1,0 +1,115 @@
+﻿using Microsoft.EntityFrameworkCore;
+using Server.Database.Entity;
+using Server.Database.Entity.Relational;
+using Server.Database.Sequence;
+using Server.Properties;
+
+namespace Server.Database.Contexts;
+
+public class HibernumContext: DbContext
+{
+    public ServerProperties serverProperties { get; private set; }
+    
+    public DbSet<AuthEntity> Auth { get; set; }
+    public DbSet<CompanyEntity> Company { get; set; }
+    public DbSet<AuthCompanyEntity> AuthCompany { get; set; }
+    public DbSet<PersonEntity> Person { get; set; }
+    public DbSet<PersonAddressEntity> Address { get; set; }
+    public DbSet<PersonContactEntity> Contact { get; set; }
+    public DbSet<PersonDocumentEntity> Document { get; set; }
+
+    public HibernumContext(ServerProperties serverProperties, DbContextOptions<HibernumContext> contextOptions) : base(contextOptions) {
+        this.serverProperties = serverProperties;
+        AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+        AppContext.SetSwitch("Npgsql.DisableDateTimeInfinityConversions", true);        
+    }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder options)
+        => options.UseNpgsql(this.serverProperties.DatabaseProperties.HibernumContextConnectionString);
+    
+    protected override void OnModelCreating(ModelBuilder builder) {
+        builder.Entity<AuthEntity>(entity =>
+        {
+            entity.Property(a1 => a1.Id)
+                .HasValueGenerator<AuthEntitySequenceGenerator>();
+            entity.Property(a1 => a1.CreatedAt)
+                .HasDefaultValue(DateTime.UtcNow);
+            entity.HasMany(a1 => a1.AuthCompanyEntities)
+                .WithOne(a2 => a2.Auth)
+                .HasForeignKey("authid");
+        });
+        
+        builder.Entity<CompanyEntity>(entity =>
+        {
+            entity.Property(a1 => a1.Id)
+                .HasValueGenerator<CompanyEntitySequenceGenerator>();
+            entity.Property(a1 => a1.CreatedAt)
+                .HasDefaultValue(DateTime.UtcNow);
+            entity.HasMany(a1 => a1.AuthCompanyEntities)
+                .WithOne(a2 => a2.Company)
+                .HasForeignKey("companyid");
+        });
+        
+        builder.Entity<AuthCompanyEntity>(entity =>
+        {
+            entity.Property(a1 => a1.Id)
+                .HasValueGenerator<AuthCompanyEntitySequenceGenerator>();
+            entity.HasOne(a1 => a1.Auth)
+                .WithMany(a2 => a2.AuthCompanyEntities)
+                .HasForeignKey("authid");
+            entity.HasOne(a1 => a1.Company)
+                .WithMany(a2 => a2.AuthCompanyEntities)
+                .HasForeignKey("companyid");
+        });
+        
+        builder.Entity<PersonEntity>(entity =>
+        {
+            entity.Property(a1 => a1.Id)
+                .HasValueGenerator<PersonEntitySequenceGenerator>();
+            entity.Property(a1 => a1.CreatedAt)
+                .HasDefaultValue(DateTime.UtcNow);
+            entity.HasMany(a1 => a1.Contacts)
+                .WithOne(a2 => a2.Person)
+                .HasForeignKey("personid");
+            entity.HasMany(a1 => a1.Address)
+                .WithOne(a2 => a2.Person)
+                .HasForeignKey("personid");
+            entity.HasMany(a1 => a1.Documents)
+                .WithOne(a2 => a2.Person)
+                .HasForeignKey("personid");
+        });
+        
+        builder.Entity<PersonContactEntity>(entity =>
+        {
+            entity.Property(a1 => a1.Id)
+                .HasValueGenerator<PersonEntitySequenceGenerator>();
+            entity.Property(a1 => a1.CreatedAt)
+                .HasDefaultValue(DateTime.UtcNow);
+            entity.HasOne(a1 => a1.Person)
+                .WithMany(a2 => a2.Contacts)
+                .HasForeignKey("personid");
+        });
+        
+        builder.Entity<PersonAddressEntity>(entity =>
+        {
+            entity.Property(a1 => a1.Id)
+                .HasValueGenerator<PersonAddressEntitySequenceGenerator>();
+            entity.Property(a1 => a1.CreatedAt)
+                .HasDefaultValue(DateTime.UtcNow);
+            entity.HasOne(a1 => a1.Person)
+                .WithMany(a2 => a2.Address)
+                .HasForeignKey("personid");
+        });
+        
+        builder.Entity<PersonDocumentEntity>(entity =>
+        {
+            entity.Property(a1 => a1.Id)
+                .HasValueGenerator<PersonDocumentEntitySequenceGenerator>();
+            entity.Property(a1 => a1.CreatedAt)
+                .HasDefaultValue(DateTime.UtcNow);
+            entity.HasOne(a1 => a1.Person)
+                .WithMany(a2 => a2.Documents)
+                .HasForeignKey("personid");
+        });
+    }
+}
