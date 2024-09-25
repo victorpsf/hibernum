@@ -1,1 +1,2 @@
+docker pull postgres
 docker run -d -p 5432:5432 -e POSTGRES_USER=[USER] -e POSTGRES_PASSWORD=[PWD] -e POSTGRES_DB=hibernum --name hibernum postgres
