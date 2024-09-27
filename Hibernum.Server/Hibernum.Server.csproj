@@ -4,6 +4,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>071c1bdf-e7c2-478e-bea0-e73071312ec5</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -14,6 +15,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Library\Server.Core\Server.Core.csproj" />
+    <ProjectReference Include="..\Library\Server.Dtos\Server.Dtos.csproj" />
+    <ProjectReference Include="..\Library\Server.Validation\Server.Validation.csproj" />
   </ItemGroup>
 
 </Project>

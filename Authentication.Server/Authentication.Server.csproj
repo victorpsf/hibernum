@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Library\Server.Core\Server.Core.csproj" />
+    <ProjectReference Include="..\Library\Server.Dtos\Server.Dtos.csproj" />
     <ProjectReference Include="..\Library\Server.Validation\Server.Validation.csproj" />
   </ItemGroup>
 

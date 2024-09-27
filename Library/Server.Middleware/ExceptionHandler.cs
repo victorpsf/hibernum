@@ -40,13 +40,7 @@ public class ExceptionHandler
         if (exception.GetType() == typeof(ServerValidationException))
         {
             context.Response.StatusCode = (int) HttpStatusCode.BadRequest;
-            var results = ((ServerValidationException)exception).Results ?? new();
-
-            foreach (var res in results)
-                if (result.ContainsKey(res.MemberNames.FirstOrDefault()))
-                    continue;
-                else
-                    result.Add(res.MemberNames.FirstOrDefault(), res.ErrorMessage);
+            result.Add("validation", ((ServerValidationException)exception).Model);
         }
 
         else if (exception.GetType() == typeof(UnauthorizedAccessException))

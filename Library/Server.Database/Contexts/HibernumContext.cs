@@ -17,6 +17,10 @@ public class HibernumContext: DbContext
     public DbSet<PersonAddressEntity> Address { get; set; }
     public DbSet<PersonContactEntity> Contact { get; set; }
     public DbSet<PersonDocumentEntity> Document { get; set; }
+    public DbSet<ProductGroupEntity> ProductGroup { get; set; }
+    public DbSet<ProductEntity> Product { get; set; }
+    public DbSet<ProductTypeEntity> ProductType { get; set; }
+    public DbSet<ProductDescriptionEntity> ProductDescription { get; set; }
 
     public HibernumContext(ServerProperties serverProperties, DbContextOptions<HibernumContext> contextOptions) : base(contextOptions) {
         this.serverProperties = serverProperties;
@@ -110,6 +114,47 @@ public class HibernumContext: DbContext
             entity.HasOne(a1 => a1.Person)
                 .WithMany(a2 => a2.Documents)
                 .HasForeignKey("personid");
+        });
+
+        builder.Entity<ProductGroupEntity>(entity =>
+        {
+            entity.Property(a => a.Id)
+                .HasValueGenerator<ProductGroupEntitySequenceGenerator>();
+            entity.Property(a => a.CreatedAt)
+                .HasDefaultValue(DateTime.UtcNow);
+            entity.HasMany(a => a.Products)
+                .WithOne(b => b.Group)
+                .HasForeignKey("groupid");
+        });
+        builder.Entity<ProductEntity>(entity =>
+        {
+            entity.Property(a => a.Id)
+                .HasValueGenerator<ProductEntitySequenceGenerator>();
+            entity.Property(a => a.CreatedAt)
+                .HasDefaultValue(DateTime.UtcNow);
+            entity.HasOne(a => a.Group)
+                .WithMany(b => b.Products)
+                .HasForeignKey("groupid");
+        });
+        builder.Entity<ProductTypeEntity>(entity =>
+        {
+            entity.Property(a => a.Id)
+                .HasValueGenerator<ProductTypeEntitySequenceGenerator>();
+            entity.Property(a => a.CreatedAt)
+                .HasDefaultValue(DateTime.UtcNow);
+            entity.HasOne(a => a.Product)
+                .WithMany(b => b.Types)
+                .HasForeignKey("productid");
+        });
+        builder.Entity<ProductDescriptionEntity>(entity =>
+        {
+            entity.Property(a => a.Id)
+                .HasValueGenerator<ProductDescriptionEntitySequenceGenerator>();
+            entity.Property(a => a.CreatedAt)
+                .HasDefaultValue(DateTime.UtcNow);
+            entity.HasOne(a => a.Product)
+                .WithMany(b => b.Descriptions)
+                .HasForeignKey("productid");
         });
     }
 }

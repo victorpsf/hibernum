@@ -17,10 +17,13 @@ public class StringValidation: ValidationAttribute
         {
             var data = value?.ToString() ?? string.Empty;
 
+            if (string.IsNullOrEmpty(data))
+                return !this.required;
+
             if (this.min > 0 && data.Length <= this.min)
                 return false;
             
-            if (this.max > 0 && this.max > data.Length)
+            if (this.max > 0 && this.max <= data.Length)
                 return false;
 
             return true;

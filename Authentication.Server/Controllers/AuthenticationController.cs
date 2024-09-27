@@ -1,8 +1,8 @@
 ﻿using Authentication.Server.Controllers.Rules;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Server.Dtos;
 using Server.Middleware;
-using Server.Models.Dto;
 using Server.Models.Security;
 using Server.Security;
 using Server.Services;
@@ -29,7 +29,7 @@ public class AuthenticationController: ControllerBase
     [AllowAnonymous]
     public IActionResult Index([FromBody] AuthenticationRule input)
     {
-        ValidateModel.Validate(input);
+        ValidateModel<AuthenticationRule>.Validate(input);
         if (string.IsNullOrEmpty(input.Name) && string.IsNullOrEmpty(input.Email))
             return BadRequest(new { Error = "'Name' ou 'Email' deve ser informado" });
 
@@ -54,7 +54,7 @@ public class AuthenticationController: ControllerBase
     [HttpGet]
     [Authorize]
     public IActionResult Company()
-        => Ok(this.Service.ListCompany(this.User.Identifier).Select(a => new PublicCompanyDto(){ Id = a.Id, Name = a.Name }));
+        => Ok(this.Service.ListCompany(this.User.Identifier).Select(a => new PublicCompanyDTO(){ Id = a.Id, Name = a.Name }));
 
     [HttpPost]
     [Authorize]
