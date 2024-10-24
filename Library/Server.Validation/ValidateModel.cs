@@ -33,21 +33,26 @@ public class ValidateModel<T> where T : class, new()
 
     private void validateList(string name, object? value)
     {
-        if (value is null)
-            return;
+        try
+        {
+            if (value is null)
+                return;
 
-        var list = (value as IEnumerable<object>).Cast<object>().ToList();
+            var list = (value as IEnumerable<object>).Cast<object>().ToList();
 
-        var results = new List<Dictionary<string, object>>();
-        foreach (var v in list)
-            try
-            { ValidateModel<object>.Validate(v); }
+            var results = new List<Dictionary<string, object>>();
+            foreach (var v in list)
+                try
+                { ValidateModel<object>.Validate(v); }
 
-            catch (ServerValidationException ex)
-            { results.Add(ex.Model); }
+                catch (ServerValidationException ex)
+                { results.Add(ex.Model); }
 
-        if (results.Any())
-            this.fieldsValidation.Add(name, results);
+            if (results.Any())
+                this.fieldsValidation.Add(name, results);            
+        }
+        
+        catch {}
     }
     
     private void validate()

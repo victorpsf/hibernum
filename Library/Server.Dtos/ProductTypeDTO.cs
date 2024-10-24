@@ -1,7 +1,7 @@
-﻿using System.Collections.ObjectModel;
-using System.ComponentModel.DataAnnotations;
-using Server.Database.Entity;
+﻿using Server.Database.Entity;
+using Server.Database.Models;
 using Server.Validation;
+using System.Text.Json.Serialization;
 
 namespace Server.Dtos;
 
@@ -10,6 +10,8 @@ public class ProductTypeDTO
     public long? Id { get; set; }
     [StringValidation(max = 1000, required = true, ErrorMessage = "value is required or lower to 1000 characters")]
     public string Value { get; set; } = string.Empty;
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public ProductDTO? Product { get; set; }
 
     public ProductTypeEntity ToEntity()
     {
@@ -25,7 +27,7 @@ public class ProductTypeDTO
         entity.Value = this.Value;
     }
 
-    public static ProductTypeDTO? ByEntity(ProductTypeEntity? entity)
+    public static ProductTypeDTO? ByEntity(ProductType? entity)
     {
         if (entity is null)
             return null;
@@ -33,11 +35,12 @@ public class ProductTypeDTO
         return new()
         {
             Id = entity.Id,
-            Value = entity.Value
+            Value = entity.Value,
+            Product = ProductDTO.By(entity.Product)
         };
     }
 
-    public static List<ProductTypeDTO?> ByEntity(Collection<ProductTypeEntity> entities)
-        => entities.Select(a => ProductTypeDTO.ByEntity(a))
+    public static List<ProductTypeDTO?> ByEntity(List<ProductType> entities)
+        => entities.Select(a => ByEntity(a))
             .ToList();
 }

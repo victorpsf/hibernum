@@ -49,6 +49,7 @@ export const PageComponent = function ({ children }: IPageComponentProps): JSX.E
                 {!logged && (<ActionComponent text="sign-in" onPress={() => {
                     RouteCtx.navigate('/login');
                 }} />)}
+
                 {logged && (<ActionComponent text="sign-out" onPress={() => {
                     signOut();
                     RouteCtx.navigate('/');

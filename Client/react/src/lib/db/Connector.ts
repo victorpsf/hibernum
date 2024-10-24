@@ -123,7 +123,7 @@ export const Connector = function ({ href, params }: IBaseConnectorConstructorPa
                 body ?? null,
                 { params: _params_, headers: _headers_ }
             );
-        else if (['delete', 'get'])
+        else if (['delete', 'get'].includes(method))
             promise = SimpleCaller(method)<R>(
                 path, { params: _params_, headers: _headers_ }
             );

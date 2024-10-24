@@ -9,8 +9,11 @@ import { IoIosUnlock } from "react-icons/io";
 import { RiBuilding2Fill } from "react-icons/ri";
 import { LoginPage } from './login/Login';
 import { CompanyPage } from './company/Company';
+import { MdProductionQuantityLimits } from "react-icons/md";
+import ProductPage from './product/Product';
+import ProductForm from "./product/ProductForm";
 
-export type IRoutePath = '/' | '/login' | '/company' | '*';
+export type IRoutePath = '/' | '/login' | '/company' | '/product' | '/product/form' | '*';
 
 export interface IRoute {
     path: IRoutePath;
@@ -26,6 +29,8 @@ export const routes: IRoute[] = [
     { path: '/', label: 'Página Inicial', icon: <IoMdHome size={25} />, main: true, element: HomePage, view: true },
     { path: '/login', label: 'Entrar', icon: <IoIosUnlock size={25} />, logged: false, element: LoginPage, view: true },
     { path: '/company', label: 'Empresa', icon: <RiBuilding2Fill size={25} />, logged: true, element: CompanyPage, view: true },
+    { path: '/product', label: 'Produtos', icon: <MdProductionQuantityLimits size={25} />, logged: true, element: ProductPage, view: true },
+    { path: '/product/form', label: 'Produtos', icon: <MdProductionQuantityLimits size={25} />, logged: true, element: ProductForm, view: false },
     { path: '*', label: 'Página de erro', element: ErrorPage, view: false }
 ]
 

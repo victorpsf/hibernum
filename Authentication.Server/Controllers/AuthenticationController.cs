@@ -75,4 +75,10 @@ public class AuthenticationController: ControllerBase
             })
         );
     }
+
+    [Authorize]
+    public IActionResult Test()
+    {
+        return Ok();
+    }
 }

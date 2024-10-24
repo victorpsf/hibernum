@@ -46,6 +46,13 @@ public class ExceptionHandler
         else if (exception.GetType() == typeof(UnauthorizedAccessException))
             context.Response.StatusCode = (int) HttpStatusCode.Unauthorized;
         
+        else if (exception.GetType() == typeof(BusinessException))
+        {
+            context.Response.StatusCode = (int) HttpStatusCode.BadRequest;
+            result.Add("stack", ((BusinessException) exception).Stack.ToString());
+        }
+            
+        
         await context.Response.WriteAsJsonAsync(result);
     }
 }

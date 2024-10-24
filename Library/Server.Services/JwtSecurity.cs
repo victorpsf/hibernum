@@ -18,7 +18,9 @@ public class JwtSecurity
 
     public UserToken Write(ClaimIdentifier claim)
     {
-        var expire = DateTime.UtcNow.AddMinutes(240);
+        var now = DateTime.UtcNow;
+        Console.WriteLine(now);
+        Console.WriteLine(now.AddMinutes(this.serverProperties.SecurityProperties.TokenMinutes));
         var handler = new JwtSecurityTokenHandler();
 
         return new UserToken()
@@ -33,7 +35,7 @@ public class JwtSecurity
                         ),
                         Issuer = this.serverProperties.SecurityProperties.TokenIssuer,
                         TokenType = this.serverProperties.SecurityProperties.TokenType,
-                        Expires = expire,
+                        Expires = now.AddMinutes(this.serverProperties.SecurityProperties.TokenMinutes),
                         SigningCredentials = this.SigningCredentials
                     })
             ),

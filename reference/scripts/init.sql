@@ -81,6 +81,64 @@ create table authxcompany (
 	primary key (id)
 );
 
+create table productgroup (
+	id bigint not null unique,
+	name varchar(1000) not null,
+	created_at timestamp default current_timestamp,
+	deleted_at timestamp,
+	
+	primary key(id)
+);
+
+create table product (
+	id bigint not null unique,
+	groupid bigint,
+	name varchar(1000) not null,
+	size varchar(25) not null,
+	created_at timestamp default current_timestamp,
+	deleted_at timestamp,
+	
+	primary key(id),
+	foreign key(groupid) references productgroup(id)
+);
+
+create table producttype (
+	id bigint not null unique,
+	productid bigint not null,
+	value varchar(1000) not null,
+	created_at timestamp default current_timestamp,
+	deleted_at timestamp,
+	
+	primary key(id),
+	foreign key(productid) references product(id)
+);
+
+create table productdescription (
+	id bigint not null unique,
+	productid bigint not null,
+	value text not null,
+	created_at timestamp default current_timestamp,
+	deleted_at timestamp,
+	
+	primary key(id),
+	foreign key(productid) references product(id)
+);
+
+create table file (
+	id bigint not null unique,
+	name varchar(1000) not null,
+	mime varchar(500) not null,
+	size bigint not null,
+	path text not null,
+
+	primary key (id)
+);
+
+create sequence file_sequence_generator 						as bigint increment 1 start 1 owned by public.file.id;
+create sequence product_group_sequence_generator 				as bigint increment 1 start 1 owned by public.productgroup.id;
+create sequence product_sequence_generator 						as bigint increment 1 start 1 owned by public.product.id;
+create sequence product_type_sequence_generator 				as bigint increment 1 start 1 owned by public.producttype.id;
+create sequence product_description_sequence_generator 			as bigint increment 1 start 1 owned by public.productdescription.id;
 create sequence auth_sequence_generator 						as bigint increment 1 start 1 owned by public.auth.id;
 create sequence company_sequence_generator 						as bigint increment 1 start 1 owned by public.company.id;
 create sequence person_sequence_generator 						as bigint increment 1 start 1 owned by public.person.id;
@@ -89,6 +147,13 @@ create sequence person_address_sequence_generator 				as bigint increment 1 star
 create sequence person_document_sequence_generator 				as bigint increment 1 start 1 owned by public.persondocument.id;
 create sequence company_person_sequence_generator 				as bigint increment 1 start 1 owned by public.companyxperson.id;
 create sequence auth_company_sequence_generator 				as bigint increment 1 start 1 owned by public.authxcompany.id;
+
+alter table public.product add column fileid bigint;
+alter table public.product add constraint fileidfk foreign key (fileid) references public.file (id);
+
+alter table public.file add column created_at timestamp default current_timestamp;
+alter table public.file add column deleted_at timestamp;
+alter table public.file add column last_modified timestamp not null;
 
 insert into auth 
 	(id, name, email, passphrase, enabled, force_passphrase_change)
@@ -141,3 +206,4 @@ values
 		1,
 		1
 	);
+

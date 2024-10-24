@@ -55,8 +55,20 @@ export const AuthProvider = function ({ children }: IAuthProvider): JSX.Element 
     React.useEffect(() => {
         const [token, type] = [AppStorage.get<string>('TOKEN'), AppStorage.get<string>('TOKEN_TYPE')];
 
-        if (token && type)
-            signIn(token, type);
+        if ((!token) || (!type)) {
+            AppStorage.unset('TOKEN');
+            AppStorage.unset('TOKEN_TYPE');
+            return;
+        }
+
+        const payload = TokenUtil.read(token)
+        if (payload.exp < new Date()) {
+            AppStorage.unset('TOKEN');
+            AppStorage.unset('TOKEN_TYPE');
+            return;
+        }
+
+        signIn(token, type);
     }, []);
 
     return (

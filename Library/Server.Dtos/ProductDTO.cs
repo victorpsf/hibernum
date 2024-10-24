@@ -1,42 +1,26 @@
-﻿using System.Collections.ObjectModel;
-using Server.Database.Entity;
-using Server.Validation;
+﻿using System.Text.Json.Serialization;
+using Server.Database.Models;
 
 namespace Server.Dtos;
 
 public class ProductDTO
 {
-    public long? Id { get; set; }
-    [StringValidation(max = 1000, required = true, ErrorMessage = "name is required or upper to 1000 characters")]
+    public long Id { get; set; }
     public string Name { get; set; } = string.Empty;
-    [StringValidation(max = 25, required = true, ErrorMessage = "name is required or upper to 1000 characters")]
     public string Size { get; set; } = string.Empty;
-    public ProductGroupDTO? Group { get; set; }
-    public List<ProductTypeDTO> Types { get; set; } = new();
-    public List<ProductDescriptionDTO> Descriptions { get; set; } = new();
-
-    public ProductEntity ToEntity()
-    {
-        var entity = new ProductEntity();
-        this.Copy(entity);
-        return entity;
-    }
     
-    public void Copy(ProductEntity product)
-    {
-        if (this.Id is not null)
-            product.Id = this.Id ?? default;
-        product.Name = this.Name;
-        product.Size = this.Size;
-        
-        if (this.Group is not null)
-            product.Group = this.Group.ToEntity();
-        
-        product.Types = new (this.Types.Select(a => a.ToEntity()).ToList());
-        product.Descriptions = new(this.Descriptions.Select(a => a.ToEntity()).ToList());
-    }
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public ProductGroupDTO? Group { get; set; }
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public FileDTO? File { get; set; }
+    
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public List<ProductTypeDTO>? Types { get; set; } = new();
+    
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public List<ProductDescriptionDTO>? Descriptions { get; set; } = new();
 
-    public static ProductDTO? By(ProductEntity? entity)
+    public static ProductDTO? By(Product? entity)
     {
         if (entity is null)
             return null;
@@ -47,8 +31,9 @@ public class ProductDTO
             Name = entity.Name,
             Size = entity.Size,
             Group = ProductGroupDTO.ByEntity(entity.Group),
-            Types = ProductTypeDTO.ByEntity(entity.Types).Where(a => a is not null).ToList() as List<ProductTypeDTO>,
-            Descriptions = ProductDescriptionDTO.ByEntity(entity.Descriptions).Where(a => a is not null).ToList() as List<ProductDescriptionDTO>
+            Types = entity.Types.Any() ? ProductTypeDTO.ByEntity(entity.Types).Where(a => a is not null).ToList() as List<ProductTypeDTO>: null,
+            Descriptions = entity.Descriptions.Any() ? ProductDescriptionDTO.ByEntity(entity.Descriptions).Where(a => a is not null).ToList() as List<ProductDescriptionDTO>: null,
+            File = FileDTO.ByEntity(entity.File)
         };
     }
 }

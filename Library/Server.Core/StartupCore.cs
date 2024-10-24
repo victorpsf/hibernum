@@ -6,6 +6,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
+using Server.Database.Connector;
+using Server.Database.Connector.Client;
 using Server.Database.Contexts;
 using Server.Library;
 using Server.Middleware;
@@ -53,6 +55,8 @@ public class StartupCore
 
     public void ConfigureDatabases(IServiceCollection services)
     {
+        services.AddScoped<ConnectorFactory>();
+
         foreach (DatabaseName name in this.Databases)
             switch (name)
             {
@@ -62,7 +66,6 @@ public class StartupCore
                     break;
                 case DatabaseName.HIBERNUM:
                     services.AddDbContext<HibernumContext>();
-                    services.AddScoped<HibernumDbService>();
                     break;
             }
     }
@@ -129,8 +132,7 @@ public class StartupCore
                 a.AllowAnyMethod();
                 a.AllowAnyOrigin();
             });
-
-        Log.Information(this.RoutePattern);
+        
         app.UseEndpoints(enpoint =>
         {
             enpoint.MapControllerRoute(

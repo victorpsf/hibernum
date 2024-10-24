@@ -75,7 +75,7 @@ export const LoginPage = function (): JSX.Element {
 
                     <div className="flex justify-center items-center">
                         <ActionComponent 
-                            text="Logar" 
+                            text="Logar"
                             // disabled={((name.length === 0 && email.length === 0) || password.length < 8)} 
                             loading={loading}
                             onPress={logar} 
